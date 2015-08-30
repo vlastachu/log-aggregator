@@ -46,7 +46,7 @@ my %order = (
     "STOP STARTED"   => 3,
     "STOP COMPLETE"  => 4,
 );
-# experiments shows that `keys %order` have indetirmenated order
+# experiments shows that `keys %order` have indeterminated order
 my @val_order = ("NOT LAUNCHED", "START STARTED" ,"START COMPLETE", "STOP STARTED" ,"STOP COMPLETE");
 # constants for state number
 my $STARTING_END = 2;
@@ -84,7 +84,8 @@ printSessionStats();
 
 # helper subroutines
 
-
+# writes collected information from global vars operation_state and operations
+# to output files
 sub printSessionStats {
     my @stack = sort (keys %operations);
     foreach my $operation (@stack) {
@@ -104,7 +105,11 @@ sub printSessionStats {
     %operation_state = ();
 }
 
-
+# Puts operation info into global vars
+# args:
+# operation name :: string, number of state :: one of %order values,
+# date of operation :: Date, current parsed line for error report :: uint
+# return: 1 if succes, else 0
 sub put_operation {
     my ($operation_name, $state_num, $date, $line_number) = @_;
     if($state_num > 1){
@@ -125,14 +130,21 @@ sub put_operation {
         }
     }
     $operation_state{$operation_name} = [$state_num, $date];
+    return 1;
 }
 
+# return operation name for provided number of operation state
 sub get_operation_name {
     my ($operation_num) = @_;
     my $operation = lc $val_order[$operation_num];
     return substr($operation, 0, index($operation, ' '));
 }
 
+# check that current state in right order after saved
+# args:
+# operation name :: string, number of state :: one of %order values,
+# current parsed line for error report :: uint
+# return 1 on success, else 0
 sub check_order {
     my ($operation_name, $state_num, $line_number) = @_;
     my $prev_state_num = $operation_state{$operation_name}[0] || 0;
