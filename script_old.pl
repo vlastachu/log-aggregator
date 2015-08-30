@@ -11,17 +11,6 @@ my $system_starts = 1;
 my %procedure_time = ();
 my @stack = ();
 
-# write last iteration statistic and reinitialize values
-# could be used on first iteration
-sub printSessionStats{
-	@stack = sort @stack;
-	print for (@stack);
-	@stack = ();
-	foreach my $name (keys %procedure_time) {
-		print "$name ". (lc $procedure_time{$name}[1]). " didn't end\n";
-	}
-	%procedure_time = ();
-}
 
 
 my $filename = 'tests/sample.txt';
@@ -63,3 +52,14 @@ while (my $row = <$fh>) {
 }
 
 
+# write last iteration statistic and reinitialize values
+# could be used on first iteration
+sub printSessionStats{
+	@stack = sort @stack;
+	print for (@stack);
+	@stack = ();
+	foreach my $name (keys %procedure_time) {
+		print "$name ". (lc $procedure_time{$name}[1]). " didn't end\n";
+	}
+	%procedure_time = ();
+}
